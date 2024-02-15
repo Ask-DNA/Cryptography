@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VigenereCipher", "VigenereCipher\VigenereCipher.csproj", "{F3CD9197-2373-45C3-82F8-AAD60297ADEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VigenereCipher", "VigenereCipher\VigenereCipher.csproj", "{F3CD9197-2373-45C3-82F8-AAD60297ADEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataEncryptionStandard", "DataEncryptionStandard\DataEncryptionStandard.csproj", "{3D055598-240F-440D-A0FB-EE75062E2CFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F3CD9197-2373-45C3-82F8-AAD60297ADEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3CD9197-2373-45C3-82F8-AAD60297ADEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3CD9197-2373-45C3-82F8-AAD60297ADEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D055598-240F-440D-A0FB-EE75062E2CFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D055598-240F-440D-A0FB-EE75062E2CFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D055598-240F-440D-A0FB-EE75062E2CFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D055598-240F-440D-A0FB-EE75062E2CFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
