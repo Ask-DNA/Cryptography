@@ -9,48 +9,50 @@ namespace VigenereCipher
         public VigenereCipher(string alphabet)
         {
             ArgumentException.ThrowIfNullOrEmpty(alphabet);
+            if (alphabet.Length != alphabet.Distinct().Count())
+                throw new ArgumentException("Duplicates not allowed.", nameof(alphabet));
             Alphabet = alphabet;
         }
 
-        private void ValidateInput(string s, string key)
+        private void ValidateInput(string input, string key)
         {
-            ArgumentException.ThrowIfNullOrEmpty(s, nameof(s));
+            ArgumentException.ThrowIfNullOrEmpty(input, nameof(input));
             ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
 
-            foreach (char c in s)
+            foreach (char c in input)
                 if (!Alphabet.Contains(c))
-                    throw new ArgumentException("Invalid character.", nameof(s));
+                    throw new ArgumentException("Invalid character.", nameof(input));
 
             foreach (char c in key)
                 if (!Alphabet.Contains(c))
                     throw new ArgumentException("Invalid character.", nameof(key));
         }
 
-        public string Encode(string s, string key)
+        public string Encode(string input, string key)
         {
-            ValidateInput(s, key);
+            ValidateInput(input, key);
 
-            StringBuilder result = new(s);
-            key = ResizeKey(key, s.Length);
+            StringBuilder result = new(input);
+            key = ResizeKey(key, input.Length);
 
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = Alphabet[(Alphabet.IndexOf(s[i]) + Alphabet.IndexOf(key[i])) % Alphabet.Length];
+                result[i] = Alphabet[(Alphabet.IndexOf(input[i]) + Alphabet.IndexOf(key[i])) % Alphabet.Length];
             }
             return result.ToString();
         }
 
-        public string Decode(string s, string key)
+        public string Decode(string input, string key)
         {
-            ValidateInput(s, key);
+            ValidateInput(input, key);
 
-            StringBuilder result = new(s);
-            key = ResizeKey(key, s.Length);
+            StringBuilder result = new(input);
+            key = ResizeKey(key, input.Length);
 
             int idx;
             for (int i = 0; i < result.Length; i++)
             {
-                idx = (Alphabet.IndexOf(s[i]) - Alphabet.IndexOf(key[i])) % Alphabet.Length;
+                idx = (Alphabet.IndexOf(input[i]) - Alphabet.IndexOf(key[i])) % Alphabet.Length;
                 idx = (idx < 0) ? Alphabet.Length + idx : idx;
                 result[i] = Alphabet[idx];
             }
