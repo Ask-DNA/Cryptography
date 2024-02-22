@@ -1,8 +1,8 @@
 ﻿using System.Text;
 
-namespace VigenereCipher
+namespace Cryptography.Encoders.Symmetric
 {
-    internal class VigenereCipher
+    public class VigenereCipher
     {
         public readonly string Alphabet;
 

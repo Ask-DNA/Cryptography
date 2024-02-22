@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Text;
 
-namespace DataEncryptionStandard
+namespace Cryptography
 {
     internal static class BitArrayExtensions
     {

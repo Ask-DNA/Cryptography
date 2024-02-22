@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 
-namespace DataEncryptionStandard
+namespace Cryptography.Encoders.Symmetric
 {
-    internal class DataEncryptionStandardEncoder
+    public class DataEncryptionStandard
     {
         private readonly int[] _initialPermutationTable = [
             58, 50, 42, 34, 26, 18, 10, 2, 60, 52, 44, 36, 28, 20, 12, 4,
@@ -106,9 +106,9 @@ namespace DataEncryptionStandard
             }
         ];
 
-        public DataEncryptionStandardEncoder() { }
+        public DataEncryptionStandard() { }
 
-        public DataEncryptionStandardEncoder(
+        public DataEncryptionStandard(
             int[] initialPermutationTable, int[] keyPermutationTableC, int[] keyPermutationTableD, int[] keyPermutationTableCD,
             int[] keyShiftTable, int[] permutationTableE, int[] permutationTableP, int[][,] permutationTablesS)
         {
@@ -234,7 +234,7 @@ namespace DataEncryptionStandard
             BitArray[] splittedInput = input.Split(64);
             BitArray result = new(0);
             BitArray tmp;
-            
+
             for (int i = 0; i < splittedInput.Length; i++)
             {
                 tmp = Permutation(new(splittedInput[i]), _initialPermutationTable);
@@ -304,7 +304,7 @@ namespace DataEncryptionStandard
             BitArray extendedKey = new(64, false);
 
             int trueCount = 0;
-            for(int i = 0, j = 0; i < 64 && j < 56; i++, j++)
+            for (int i = 0, j = 0; i < 64 && j < 56; i++, j++)
             {
                 if (i % 8 != 0)
                 {
@@ -337,7 +337,7 @@ namespace DataEncryptionStandard
             result = new(Bnew[0]);
             for (int i = 1; i < 8; i++)
                 result = result.Append(Bnew[i]);
-            
+
             result = Permutation(result, _permutationTableP);
             return result;
         }
