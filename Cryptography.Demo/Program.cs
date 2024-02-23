@@ -1,6 +1,8 @@
 ﻿using Cryptography.Encoders.Symmetric;
+using Cryptography.Encoders.Asymmetric;
 using System.Collections;
 using System.Text;
+using System.Numerics;
 
 namespace Cryptography.Demo
 {
@@ -9,7 +11,8 @@ namespace Cryptography.Demo
         static void Main()
         {
             //VigenereCipherDemo();
-            DESDemo();
+            //DESDemo();
+            RSADemo();
         }
 
         static void VigenereCipherDemo()
@@ -69,27 +72,27 @@ namespace Cryptography.Demo
                         key[i] = r.Next(10000) >= 5000;
 
                     Console.WriteLine("Generated binary key:");
-                    PrintBitArray(key);
+                    DemoUtils.PrintBitArray(key);
                     Console.WriteLine();
                     Console.WriteLine();
 
-                    messageBits = StringToBinary(messageStr);
+                    messageBits = DemoUtils.StringToBitArray(messageStr);
                     encodedBits = DES.Encode(messageBits, key);
                     decodedBits = DES.Decode(encodedBits, key);
-                    messageDecodedStr = BinaryToString(decodedBits);
+                    messageDecodedStr = DemoUtils.BitArrayToString(decodedBits);
 
                     Console.WriteLine("Message (binary form):");
-                    PrintBitArray(messageBits);
+                    DemoUtils.PrintBitArray(messageBits);
                     Console.WriteLine();
                     Console.WriteLine();
 
                     Console.WriteLine("Encoded message (binary form):");
-                    PrintBitArray(encodedBits);
+                    DemoUtils.PrintBitArray(encodedBits);
                     Console.WriteLine();
                     Console.WriteLine();
 
                     Console.WriteLine("Decoded message (binary form):");
-                    PrintBitArray(decodedBits);
+                    DemoUtils.PrintBitArray(decodedBits);
                     Console.WriteLine();
                     Console.WriteLine();
 
@@ -104,38 +107,72 @@ namespace Cryptography.Demo
                 Console.ReadKey();
                 Console.Clear();
             }
+        }
 
-            static void PrintBitArray(BitArray input)
+        static void RSADemo()
+        {
+            RSA encoder = new();
+            int message = new Random().Next();
+
+            encoder.GenerateKeys(out (BigInteger e, BigInteger n) publicKey, out (BigInteger e, BigInteger n) privateKey);
+            BigInteger encoded = RSA.Encode(message, publicKey);
+            BigInteger decoded = RSA.Decode(encoded, privateKey);
+
+            Console.WriteLine(message.ToString());
+            Console.WriteLine(encoded.ToString());
+            Console.WriteLine(decoded.ToString());
+        }
+    }
+
+    static class DemoUtils
+    {
+        public static byte[] StringToBytes(string s)
+        {
+            if (s.Length == 0)
+                return [];
+
+            List<byte> byteList = new(s.Length * 2);
+            for (int i = 0; i < s.Length; i++)
+                byteList.AddRange(BitConverter.GetBytes(s[i]));
+
+            return [.. byteList];
+        }
+
+        public static string BytesToString(byte[] bytes)
+        {
+            byte[] tmp;
+            if (bytes.Length != 0 && bytes.Length % 2 != 0)
             {
-                for (int i = 0; i < input.Length; i++)
-                    Console.Write(input[i] ? "1" : "0");
+                tmp = new byte[bytes.Length + 1];
+                bytes.CopyTo(tmp, 0);
+                tmp[^1] = 0;
+                bytes = tmp;
             }
+            StringBuilder sb = new();
+            for (int i = 0; i < bytes.Length - 1; i += 2)
+                sb.Append(BitConverter.ToChar(bytes, i));
+            return sb.ToString();
+        }
 
-            static BitArray StringToBinary(string input)
-            {
-                List<byte> byteList = new(input.Length * 2);
-                for (int i = 0; i < input.Length; i++)
-                    byteList.AddRange(BitConverter.GetBytes(input[i]));
+        public static BitArray StringToBitArray(string s) => new(StringToBytes(s));
 
-                byte[] bytes = [.. byteList];
-                return new(bytes);
-            }
+        public static string BitArrayToString(BitArray bitArray)
+        {
+            if (bitArray.Length == 0)
+                throw new InvalidOperationException();
+            if (bitArray.Length % 8 != 0)
+                throw new InvalidOperationException();
 
-            static string BinaryToString(BitArray input)
-            {
-                if (input.Length == 0)
-                    throw new InvalidOperationException();
-                if (input.Length % 8 != 0)
-                    throw new InvalidOperationException();
+            byte[] bytes = new byte[bitArray.Length / 8];
+            bitArray.CopyTo(bytes, 0);
 
-                byte[] bytes = new byte[input.Length / 8];
-                input.CopyTo(bytes, 0);
+            return BytesToString(bytes);
+        }
 
-                StringBuilder sb = new();
-                for (int i = 0; i < bytes.Length - 1; i += 2)
-                    sb.Append(BitConverter.ToChar(bytes, i));
-                return sb.ToString();
-            }
+        public static void PrintBitArray(BitArray bitArray)
+        {
+            for (int i = 0; i < bitArray.Length; i++)
+                Console.Write(bitArray[i] ? "1" : "0");
         }
     }
 }

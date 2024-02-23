@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Text;
+using System.Numerics;
 
 namespace Cryptography
 {
@@ -68,6 +69,15 @@ namespace Cryptography
             for (int i = 0; i < a.Length; i++)
                 sb.Append(a[i] ? '1' : '0');
             return sb.ToString();
+        }
+
+        public static BigInteger ToBigInteger(this BitArray a)
+        {
+            BigInteger result = 0;
+            for (int i = a.Length - 1; i >= 0; i--)
+                if (a[i])
+                    result += BigInteger.Pow(2, i);
+            return result;
         }
     }
 }
