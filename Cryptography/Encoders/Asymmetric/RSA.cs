@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using System.Collections;
 
 namespace Cryptography.Encoders.Asymmetric
 {
@@ -16,8 +15,10 @@ namespace Cryptography.Encoders.Asymmetric
 
         public void GenerateKeys(out (BigInteger e, BigInteger n) publicKey, out (BigInteger d, BigInteger n) privateKey)
         {
-            BigInteger p = GetRandomPrimeNumber(4);
-            BigInteger q = GetRandomPrimeNumber(4);
+            BigInteger min = BigIntegerExtensions.MinPositive(32);
+
+            BigInteger p = BigIntegerExtensions.ProbablePrime(min, _random);
+            BigInteger q = BigIntegerExtensions.ProbablePrime(min, _random);
             BigInteger n = p * q;
             BigInteger euler = (p - 1) * (q - 1);
             BigInteger e = 65537;
@@ -26,39 +27,15 @@ namespace Cryptography.Encoders.Asymmetric
             privateKey = (d, n);
         }
 
-        public static BigInteger Encode(BigInteger data, (BigInteger e, BigInteger n) publicKey)
+        public static byte[] Sifer(byte[] data, (byte[] exp, byte[] n) key)
         {
-            return data.PowMod(publicKey.e, publicKey.n); 
+            (BigInteger exp, BigInteger n) = (new(key.exp), new(key.n));
+            return BigInteger.ModPow(new(data), exp, n).ToByteArray();
         }
 
-        public static BigInteger Decode(BigInteger data, (BigInteger d, BigInteger n) privateKey)
+        public static BigInteger Sifer(BigInteger data, (BigInteger exp, BigInteger n) key)
         {
-            return data.PowMod(privateKey.d, privateKey.n);
-        }
-
-        private BigInteger GetRandomPrimeNumber(int nBytes)
-        {
-            byte[] bytes = new byte[nBytes];
-
-            BigInteger result = 0;
-            BitArray bitArray;
-            while (result == 0)
-            {
-                _random.NextBytes(bytes);
-                bitArray = new(bytes);
-                result = bitArray.ToBigInteger();
-            }
-            
-            if (result < 0)
-                result = BigInteger.Abs(result);
-
-            if (result % 2 == 0)
-                result -= 1;
-
-            while (!result.IsPrime())
-                result -= 2;
-
-            return result;
+            return BigInteger.ModPow(data, key.exp, key.n);
         }
     }
 }

@@ -112,15 +112,30 @@ namespace Cryptography.Demo
         static void RSADemo()
         {
             RSA encoder = new();
-            int message = new Random().Next();
+            Random rnd = new();
+            Console.WriteLine("Generating keys...");
+            encoder.GenerateKeys(out (byte[] e, byte[] n) publicKey, out (byte[] e, byte[] n) privateKey);
+            Console.Clear();
+            byte[] message = new byte[32];
+            byte[] encoded, decoded;
 
-            encoder.GenerateKeys(out (BigInteger e, BigInteger n) publicKey, out (BigInteger e, BigInteger n) privateKey);
-            BigInteger encoded = RSA.Encode(message, publicKey);
-            BigInteger decoded = RSA.Decode(encoded, privateKey);
+            while (true)
+            {
+                rnd.NextBytes(message);
+                encoded = RSA.Sifer(message, publicKey);
+                decoded = RSA.Sifer(encoded, privateKey);
 
-            Console.WriteLine(message.ToString());
-            Console.WriteLine(encoded.ToString());
-            Console.WriteLine(decoded.ToString());
+                Console.WriteLine("Key module length (bits): " + new BigInteger(publicKey.n).GetBitLength().ToString());
+                Console.WriteLine();
+                Console.WriteLine("Message: " + BitConverter.ToString(message) + Environment.NewLine);
+                Console.WriteLine("Encoded: " + BitConverter.ToString(encoded) + Environment.NewLine);
+                Console.WriteLine("Decoded: " + BitConverter.ToString(decoded) + Environment.NewLine);
+
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                Console.Clear();
+            }
+            
         }
     }
 

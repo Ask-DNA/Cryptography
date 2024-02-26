@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Text;
-using System.Numerics;
 
 namespace Cryptography
 {
@@ -51,17 +50,17 @@ namespace Cryptography
             return result;
         }
 
-        public static byte[] ToByteArray(this BitArray a)
-        {
-            if (a.Length == 0)
-                throw new InvalidOperationException();
-            if (a.Length % 8 != 0)
-                throw new InvalidOperationException();
+        //public static byte[] ToByteArray(this BitArray a)
+        //{
+        //    if (a.Length == 0)
+        //        throw new InvalidOperationException();
+        //    if (a.Length % 8 != 0)
+        //        throw new InvalidOperationException();
 
-            byte[] result = new byte[a.Length / 8];
-            a.CopyTo(result, 0);
-            return result;
-        }
+        //    byte[] result = new byte[a.Length / 8];
+        //    a.CopyTo(result, 0);
+        //    return result;
+        //}
 
         public static string ToBinaryString(this BitArray a)
         {
@@ -71,13 +70,12 @@ namespace Cryptography
             return sb.ToString();
         }
 
-        public static BigInteger ToBigInteger(this BitArray a)
-        {
-            BigInteger result = 0;
-            for (int i = a.Length - 1; i >= 0; i--)
-                if (a[i])
-                    result += BigInteger.Pow(2, i);
-            return result;
-        }
+        //public static BitArray DropLast(this BitArray a)
+        //{
+        //    BitArray result = new(a.Length - 1);
+        //    for (int i = 0; i < result.Length; i++)
+        //        result[i] = a[i];
+        //    return result;
+        //}
     }
 }
