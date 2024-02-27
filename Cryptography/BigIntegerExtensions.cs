@@ -17,7 +17,7 @@ namespace Cryptography
 
         public static BigInteger ProbablePrime(BigInteger minValue, Random rnd)
         {
-            List<int> primes = new SieveOfEratosthenes(1000000).GetPrimes();
+            List<int> primes = new SieveOfEratosthenes(1000000).Primes;
             BigInteger prime = primes[rnd.Next(primes.Count)];
             BigInteger candidate, randEven, randInt, d;
             bool check;

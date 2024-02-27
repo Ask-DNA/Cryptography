@@ -35,7 +35,7 @@ namespace Cryptography.Encoders.Asymmetric
             privateKey = (privateExponent, module);
         }
 
-        public static byte[] Sifer(byte[] data, (byte[] exponent, byte[] module) key)
+        public static byte[] Cipher(byte[] data, (byte[] exponent, byte[] module) key)
         {
             (BigInteger exponentInt, BigInteger moduleInt) = (new(key.exponent), new(key.module));
             BigInteger dataInt = new(data);
@@ -44,14 +44,14 @@ namespace Cryptography.Encoders.Asymmetric
             return BigInteger.ModPow(dataInt, exponentInt, moduleInt).ToByteArray();
         }
 
-        public static BigInteger Sifer(BigInteger data, (BigInteger exponent, BigInteger module) key)
+        public static BigInteger Cipher(BigInteger data, (BigInteger exponent, BigInteger module) key)
         {
             if (data >= key.module)
                 throw new ArgumentException($"'{nameof(data)}' must be less than '{nameof(key.module)}'.");
             return BigInteger.ModPow(data, key.exponent, key.module);
         }
 
-        public static bool TrySifer(byte[] data, (byte[] exponent, byte[] module) key, out byte[] result)
+        public static bool TryCipher(byte[] data, (byte[] exponent, byte[] module) key, out byte[] result)
         {
             (BigInteger exponentInt, BigInteger moduleInt) = (new(key.exponent), new(key.module));
             BigInteger dataInt = new(data);
@@ -64,7 +64,7 @@ namespace Cryptography.Encoders.Asymmetric
             return true;
         }
 
-        public static bool TrySifer(BigInteger data, (BigInteger exponent, BigInteger module) key, out BigInteger result)
+        public static bool TryCipher(BigInteger data, (BigInteger exponent, BigInteger module) key, out BigInteger result)
         {
             if (data >= key.module)
             {

@@ -122,8 +122,8 @@ namespace Cryptography.Demo
             while (true)
             {
                 rnd.NextBytes(message);
-                encoded = RSA.Sifer(message, publicKey);
-                decoded = RSA.Sifer(encoded, privateKey);
+                encoded = RSA.Cipher(message, publicKey);
+                decoded = RSA.Cipher(encoded, privateKey);
 
                 Console.WriteLine("Key module length (bits): " + new BigInteger(publicKey.n).GetBitLength().ToString());
                 Console.WriteLine();

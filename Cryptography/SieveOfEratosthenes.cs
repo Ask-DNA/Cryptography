@@ -3,6 +3,32 @@
     internal class SieveOfEratosthenes
     {
         private readonly bool[] _sieve;
+        private List<int>? _primes = null;
+
+        public bool[] Sieve
+        {
+            get
+            {
+                bool[] result = new bool[_sieve.Length];
+                _sieve.CopyTo(result, 0);
+                return result;
+            }
+        }
+
+        public List<int> Primes
+        {
+            get
+            {
+                if (_primes == null)
+                {
+                    _primes = [];
+                    for (int i = 0; i < _sieve.Length; i++)
+                        if (_sieve[i])
+                            _primes.Add(i);
+                }
+                return new(_primes);
+            }
+        }
 
         public SieveOfEratosthenes(int n)
         {
@@ -17,37 +43,40 @@
                         _sieve[j] = false;
         }
 
-        public List<int> GetPrimes()
-        {
-            List<int> primes = [];
-            for (int i = 0; i < _sieve.Length; i++)
-                if (_sieve[i])
-                    primes.Add(i);
-            return primes;
-        }
+        //public List<int> GetPrimes()
+        //{
+        //    List<int> primes = [];
+        //    for (int i = 0; i < _sieve.Length; i++)
+        //        if (_sieve[i])
+        //            primes.Add(i);
+        //    return primes;
+        //}
 
-        public List<int> GetPrimes(int rightBorder)
-        {
-            ArgumentOutOfRangeException.ThrowIfLessThan(rightBorder, 0);
+        //public List<int> GetPrimes(int maxValue)
+        //{
+        //    ArgumentOutOfRangeException.ThrowIfLessThan(maxValue, 0);
 
-            List<int> primes = [];
-            for (int i = 0; i < rightBorder && i < _sieve.Length; i++)
-                if (_sieve[i])
-                    primes.Add(i);
-            return primes;
-        }
+        //    List<int> primes = [];
+        //    for (int i = 0; i < maxValue && i < _sieve.Length; i++)
+        //        if (_sieve[i])
+        //            primes.Add(i);
+        //    return primes;
+        //}
 
-        public List<int> GetPrimes(int leftBorder, int rightBorder)
-        {
-            ArgumentOutOfRangeException.ThrowIfLessThan(leftBorder, 0);
-            ArgumentOutOfRangeException.ThrowIfLessThan(rightBorder, leftBorder);
-            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(rightBorder, _sieve.Length);
+        //public List<int> GetPrimes(int minValue, int maxValue)
+        //{
+        //    ArgumentOutOfRangeException.ThrowIfNegative(minValue);
+        //    if (minValue > maxValue)
+        //        throw new ArgumentException($"'{nameof(minValue)}' must be greater than or equal to '{nameof(maxValue)}'.");
+        //    if (maxValue >= _sieve.Length)
+        //        throw new ArgumentException($"'{nameof(maxValue)}' must be less than size of '{nameof(Sieve)}'.");
+        //    ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(maxValue, _sieve.Length);
 
-            List<int> primes = [];
-            for (int i = leftBorder; i < rightBorder && i < _sieve.Length; i++)
-                if (_sieve[i])
-                    primes.Add(i);
-            return primes;
-        }
+        //    List<int> primes = [];
+        //    for (int i = minValue; i < maxValue && i < _sieve.Length; i++)
+        //        if (_sieve[i])
+        //            primes.Add(i);
+        //    return primes;
+        //}
     }
 }

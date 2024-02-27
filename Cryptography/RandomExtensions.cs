@@ -30,7 +30,7 @@ namespace Cryptography
         public static BigInteger NextBigInteger(this Random random, BigInteger minValue, BigInteger maxValue)
         {
             if (minValue > maxValue)
-                throw new ArgumentException($"'{nameof(minValue)}' must be greater thaon or equal to '{nameof(maxValue)}'.");
+                throw new ArgumentException($"'{nameof(minValue)}' must be greater than or equal to '{nameof(maxValue)}'.");
 
             if (minValue == maxValue)
                 return maxValue;
