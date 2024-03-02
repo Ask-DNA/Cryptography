@@ -12,7 +12,8 @@ namespace Cryptography.Demo
         {
             //VigenereCipherDemo();
             //DESDemo();
-            RSADemo();
+            //RSADemo();
+            AESDemo();
         }
 
         static void VigenereCipherDemo()
@@ -136,6 +137,51 @@ namespace Cryptography.Demo
                 Console.Clear();
             }
             
+        }
+
+        static void AESDemo()
+        {
+            Random r = new(1);
+            string messageOriginalStr, messageDecodedStr;
+            byte[] messageOriginalBytes, messageEncodedBytes, messageDecodedBytes;
+            byte[] key = new byte[16];
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter message: ");
+                    messageOriginalStr = Console.ReadLine() ?? throw new Exception("Incorrect input.");
+                    Console.WriteLine();
+
+                    messageOriginalBytes = DemoUtils.StringToBytes(messageOriginalStr);
+                    Console.WriteLine($"Message bytes: {BitConverter.ToString(messageOriginalBytes)}");
+                    Console.WriteLine();
+
+                    r.NextBytes(key);
+                    Console.WriteLine($"Generated key: {BitConverter.ToString(key)}");
+                    Console.WriteLine();
+
+                    messageEncodedBytes = AdvancedEncryptionStandard.Encrypt(messageOriginalBytes, key);
+                    Console.WriteLine($"Encoded message bytes: {BitConverter.ToString(messageEncodedBytes)}");
+                    Console.WriteLine();
+
+                    messageDecodedBytes = AdvancedEncryptionStandard.Decrypt(messageEncodedBytes, key);
+                    Console.WriteLine($"Decoded message bytes: {BitConverter.ToString(messageDecodedBytes)}");
+                    Console.WriteLine();
+
+                    messageDecodedStr = DemoUtils.BytesToString(messageDecodedBytes);
+                    Console.WriteLine($"Decoded message: {messageDecodedStr}");
+                    Console.WriteLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception: " + ex.Message + Environment.NewLine);
+                }
+
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                Console.Clear();
+            }
         }
     }
 
