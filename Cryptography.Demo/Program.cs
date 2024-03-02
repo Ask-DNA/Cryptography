@@ -10,10 +10,10 @@ namespace Cryptography.Demo
     {
         static void Main()
         {
-            //VigenereCipherDemo();
+            VigenereCipherDemo();
             //DESDemo();
             //RSADemo();
-            AESDemo();
+            //AESDemo();
         }
 
         static void VigenereCipherDemo()
@@ -37,8 +37,8 @@ namespace Cryptography.Demo
                     key = Console.ReadLine() ?? throw new Exception("Incorrect input.");
                     Console.WriteLine();
 
-                    encoded = encoder.Encode(message, key);
-                    decoded = encoder.Decode(encoded, key);
+                    encoded = encoder.Encrypt(message, key);
+                    decoded = encoder.Decrypt(encoded, key);
                     Console.WriteLine("Encoded message: " + encoded + Environment.NewLine);
                     Console.WriteLine("Decoded message: " + decoded + Environment.NewLine);
                 }

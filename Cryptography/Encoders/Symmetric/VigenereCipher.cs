@@ -8,73 +8,121 @@ namespace Cryptography.Encoders.Symmetric
 
         public VigenereCipher(string alphabet)
         {
-            ArgumentException.ThrowIfNullOrEmpty(alphabet);
+            if (alphabet.Length == 0)
+                throw new ArgumentException($"Input string '{nameof(alphabet)}' must be non-empty.");
             if (alphabet.Length != alphabet.Distinct().Count())
-                throw new ArgumentException("Duplicates not allowed.", nameof(alphabet));
+                throw new ArgumentException($"Input string '{nameof(alphabet)}' must not contain duplicates.");
+
             Alphabet = alphabet;
         }
 
-        private void ValidateInput(string input, string key)
+        public VigenereCipher(char[] alphabet)
         {
-            ArgumentException.ThrowIfNullOrEmpty(input, nameof(input));
-            ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
+            if (alphabet.Length == 0)
+                throw new ArgumentException($"Input array '{nameof(alphabet)}' must be non-empty.");
+            if (alphabet.Length != alphabet.Distinct().Count())
+                throw new ArgumentException($"Input array '{nameof(alphabet)}' must not contain duplicates.");
 
-            foreach (char c in input)
+            Alphabet = new string(alphabet);
+        }
+
+        public string Encrypt(string data, string key)
+        {
+            if (data.Length == 0)
+                throw new ArgumentException($"Input string '{nameof(data)}' must be non-empty.");
+            if (key.Length == 0)
+                throw new ArgumentException($"Input string '{nameof(key)}' must be non-empty.");
+            foreach (char c in data)
                 if (!Alphabet.Contains(c))
-                    throw new ArgumentException("Invalid character.", nameof(input));
-
+                    throw new ArgumentException($"Input string '{nameof(data)}' must only contain characters contained in '{nameof(Alphabet)}'.");
             foreach (char c in key)
                 if (!Alphabet.Contains(c))
-                    throw new ArgumentException("Invalid character.", nameof(key));
-        }
+                    throw new ArgumentException($"Input string '{nameof(key)}' must only contain characters contained in '{nameof(Alphabet)}'.");
 
-        public string Encode(string input, string key)
-        {
-            ValidateInput(input, key);
+            StringBuilder resultBuilder = new(data);
+            key = KeyExpansion(key, data.Length);
 
-            StringBuilder result = new(input);
-            key = ResizeKey(key, input.Length);
-
-            for (int i = 0; i < result.Length; i++)
+            for (int i = 0; i < resultBuilder.Length; i++)
             {
-                result[i] = Alphabet[(Alphabet.IndexOf(input[i]) + Alphabet.IndexOf(key[i])) % Alphabet.Length];
+                resultBuilder[i] = Alphabet[(Alphabet.IndexOf(data[i]) + Alphabet.IndexOf(key[i])) % Alphabet.Length];
             }
-            return result.ToString();
+            return resultBuilder.ToString();
         }
 
-        public string Decode(string input, string key)
+        public string Decrypt(string data, string key)
         {
-            ValidateInput(input, key);
+            if (data.Length == 0)
+                throw new ArgumentException($"Input string '{nameof(data)}' must be non-empty.");
+            if (key.Length == 0)
+                throw new ArgumentException($"Input string '{nameof(key)}' must be non-empty.");
+            foreach (char c in data)
+                if (!Alphabet.Contains(c))
+                    throw new ArgumentException($"Input string '{nameof(data)}' must only contain characters contained in '{nameof(Alphabet)}'.");
+            foreach (char c in key)
+                if (!Alphabet.Contains(c))
+                    throw new ArgumentException($"Input string '{nameof(key)}' must only contain characters contained in '{nameof(Alphabet)}'.");
 
-            StringBuilder result = new(input);
-            key = ResizeKey(key, input.Length);
+            StringBuilder resultBuilder = new(data);
+            key = KeyExpansion(key, data.Length);
 
             int idx;
-            for (int i = 0; i < result.Length; i++)
+            for (int i = 0; i < resultBuilder.Length; i++)
             {
-                idx = (Alphabet.IndexOf(input[i]) - Alphabet.IndexOf(key[i])) % Alphabet.Length;
+                idx = (Alphabet.IndexOf(data[i]) - Alphabet.IndexOf(key[i])) % Alphabet.Length;
                 idx = (idx < 0) ? Alphabet.Length + idx : idx;
-                result[i] = Alphabet[idx];
+                resultBuilder[i] = Alphabet[idx];
             }
-            return result.ToString();
+            return resultBuilder.ToString();
         }
 
-        private static string ResizeKey(string key, int length)
+        public char[] Encrypt(char[] data, char[] key)
         {
-            StringBuilder result = new(length);
+            if (data.Length == 0)
+                throw new ArgumentException($"Input array '{nameof(data)}' must be non-empty.");
+            if (key.Length == 0)
+                throw new ArgumentException($"Input array '{nameof(key)}' must be non-empty.");
+            foreach (char c in data)
+                if (!Alphabet.Contains(c))
+                    throw new ArgumentException($"Input array '{nameof(data)}' must only contain characters contained in '{nameof(Alphabet)}'.");
+            foreach (char c in key)
+                if (!Alphabet.Contains(c))
+                    throw new ArgumentException($"Input array '{nameof(key)}' must only contain characters contained in '{nameof(Alphabet)}'.");
+
+            return Encrypt(new string(data), new string(key)).ToCharArray();
+        }
+
+        public char[] Decrypt(char[] data, char[] key)
+        {
+            if (data.Length == 0)
+                throw new ArgumentException($"Input array '{nameof(data)}' must be non-empty.");
+            if (key.Length == 0)
+                throw new ArgumentException($"Input array '{nameof(key)}' must be non-empty.");
+            foreach (char c in data)
+                if (!Alphabet.Contains(c))
+                    throw new ArgumentException($"Input array '{nameof(data)}' must only contain characters contained in '{nameof(Alphabet)}'.");
+            foreach (char c in key)
+                if (!Alphabet.Contains(c))
+                    throw new ArgumentException($"Input array '{nameof(key)}' must only contain characters contained in '{nameof(Alphabet)}'.");
+
+            return Decrypt(new string(data), new string(key)).ToCharArray();
+        }
+
+        private static string KeyExpansion(string key, int length)
+        {
+            StringBuilder resultBuilder = new(length);
 
             if (key.Length <= length)
             {
-                result.Insert(0, key, length / key.Length);
+                resultBuilder.Insert(0, key, length / key.Length);
                 length %= key.Length;
             }
 
             if (length > 0)
             {
-                result.Append(key[..length]);
+                resultBuilder.Append(key[..length]);
             }
 
-            return result.ToString();
+            return resultBuilder.ToString();
         }
     }
 }
